@@ -1,4 +1,4 @@
-name: Pollsome Bot CI-CD
+name: Map CI/CD
 
 on:
   # Triggers the workflow on push or pull request events but only for the main branch
