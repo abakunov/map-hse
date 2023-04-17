@@ -26,8 +26,8 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('id', 'tg_id', 'tg_username', 'name', 'age', 'bio', 'department', 'photo', 'song', 'interests', 'views_all_time', 'views_today', 'last_time_set_location')
-        depth = 3
+        fields = '__all__'
+        depth = 2
 
     @property
     def in_coworking(self):

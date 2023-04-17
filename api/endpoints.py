@@ -22,4 +22,5 @@ api_urls = [
     path('get-all-users/', GetAllUsersView.as_view(), name='get-all-users'),
 
     path('skip-user/', SkipUserView.as_view(), name='skip-user'),
+    path('get-user-by-tg-id/', GetUserByTgIdView.as_view(), name='get-user-by_tg_id'),
 ]

@@ -96,7 +96,7 @@ class MapView(views.APIView):
             'map_width': floor.map_image.width,
             'zoom_x': 1,
             'zoom_y': 1,
-            'users': MapSerializer(User.objects.filter(location__floor=floor, 
+            'users': UserSerializer(User.objects.filter(location__floor=floor, 
                     last_time_set_location__gt=datetime.datetime.now() - datetime.timedelta(hours=1)).exclude(tg_id=user.tg_id),
                     many=True).data
         }
@@ -128,3 +128,12 @@ class SkipUserView(views.APIView):
         user = User.objects.get(tg_id=request.data['tg_id'])
         user.blacklist.add(User.objects.get(tg_id=request.data['target_id']))
         return Response(status=status.HTTP_200_OK)
+
+
+class GetUserByTgIdView(generics.RetrieveAPIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request, *args, **kwargs):
+        user = User.objects.get(tg_id=request.GET.get('tg_id'))
+        data = UserSerializer(user).data
+        return Response(data, status=status.HTTP_200_OK)
