@@ -126,7 +126,6 @@ class GetAllUsersView(generics.ListAPIView):
         return User.objects.exclude(tg_id=user.tg_id).exclude(tg_id__in=blacklist.values_list('tg_id', flat=True))
 
 
-
 class SkipUserView(views.APIView):
     permission_classes = [AllowAny]
 
