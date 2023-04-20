@@ -3,7 +3,7 @@ from django.core.management.base import BaseCommand
 import telebot, requests
 from telebot import types
 import re
-from core.models import User, Interest
+from core.models import User, Interest, Song, Location
 from django.core.files.base import ContentFile
 from map.settings import BOT_TOKEN
 
@@ -53,10 +53,12 @@ def start_bot():
         bot.register_next_step_handler(message, get_song)
 
     def get_song(message):
-        name, artist = message.text.split('-')
+        artist, name = message.text.split('-')
+        atrist = artist.strip().lower()
+        name = name.strip().lower()
         user = User.objects.get(tg_id=message.chat.id)
-        song = Song.objects.create(name=name, artist=artist)
-        user.song = song
+        song = Song(name=name, artist=artist).save()
+        user.song = Song.objects.filter(name=name, artist=artist)[0]
         user.save()
         bot.send_message(message.chat.id, 'Отправь фотографию')
         bot.register_next_step_handler(message, get_photo)

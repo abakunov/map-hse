@@ -94,6 +94,7 @@ class Song(models.Model):
     name = models.CharField(max_length=1000)
     artist = models.CharField(max_length=1000)
     cover = models.ImageField(blank=True, null=True)
+    timestamp = models.DateTimeField(auto_now_add=True, blank=True, null=True)
 
     def save(self, *args, **kwargs):
         if not self.cover:
