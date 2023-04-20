@@ -10,4 +10,11 @@ services:
       - ./media:/app/map/media
     ports:
       - "8000:8000"
-      
+  
+  bot:
+    image: bot_image
+    build: .
+    command: python manage.py start_bot
+    volumes:
+      - .:/usr/src/app/
+      - ./media:/app/map/media

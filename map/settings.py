@@ -102,6 +102,7 @@ DATABASES = {
 
 
 BOT_TOKEN = os.getenv('BOT_TOKEN')
+GENIUS_ACCESS_TOKEN = os.getenv('GENIUS_ACCESS_TOKEN')
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators

@@ -154,6 +154,8 @@ class SendWaweView(views.APIView):
         bot = telebot.TeleBot(BOT_TOKEN)
 
         bot.send_message(target.tg_id, user.name + ' приветствует тебя!🖐' + ' ' + '@'+ str(user.tg_username))
+        bot.send_message(user.tg_id, 'Ты приветствуешь ' + target.name + '🖐' + ' ' + '@'+ str(target.tg_username))
+
         
         return Response(status=status.HTTP_200_OK)
 
@@ -168,6 +170,7 @@ class SendLikeView(views.APIView):
         bot = telebot.TeleBot(BOT_TOKEN)
 
         bot.send_message(target.tg_id, user.name + ' приветствует тебя!💙' + ' ' + '@'+ str(user.tg_username))
+        bot.send_message(user.tg_id, 'Ты приветствуешь ' + target.name + '💙' + ' ' + '@'+ str(target.tg_username))
         
         return Response(status=status.HTTP_200_OK)
 
@@ -182,5 +185,6 @@ class SendDopeView(views.APIView):
         bot = telebot.TeleBot(BOT_TOKEN)
 
         bot.send_message(target.tg_id, user.name + ' приветствует тебя!😎' + ' ' + '@'+ str(user.tg_username))
+        bot.send_message(user.tg_id, 'Ты приветствуешь ' + target.name + '😎' + ' ' + '@'+ str(target.tg_username))
         
         return Response(status=status.HTTP_200_OK)

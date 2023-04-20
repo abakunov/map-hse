@@ -2,6 +2,18 @@ from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 import datetime
+from django.core.files import File
+from django.core.files.temp import NamedTemporaryFile
+from .genius_parser import get_song_image
+from map.settings import GENIUS_ACCESS_TOKEN
+import urllib
+from urllib.parse import urlparse
+from django.core.files import File
+import urllib.request
+import os
+import requests
+from django.core.files.base import ContentFile
+
 
 
 class User(models.Model):
@@ -83,5 +95,12 @@ class Song(models.Model):
     artist = models.CharField(max_length=1000)
     cover = models.ImageField(blank=True, null=True)
 
+    def save(self, *args, **kwargs):
+        if not self.cover:
+            img_url = get_song_image(self.artist, self.name, GENIUS_ACCESS_TOKEN)      
+            response = requests.get(img_url)
+            self.cover.save(f'{self.name+self.artist}.jpg', ContentFile(response.content))
+        super(Song, self).save(*args, **kwargs)
+
     def __str__(self):
-        return self.name + ' ' + self.artist
+        return self.artist + ' - ' + self.name

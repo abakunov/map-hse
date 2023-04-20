@@ -13,15 +13,14 @@ def start_bot():
     @bot.callback_query_handler(func=lambda call: True)
     def callback_worker(call):
         if call.data == "yes":
-            if User.objects.filter(tg_id=call.message.chat.id).exists():
-                bot.send_message(call.message.chat.id, 'Ты уже зарегистрирован')
-            else:
-                bot.send_message(call.message.chat.id, 'Как тебя зовут?')
-                bot.register_next_step_handler(call.message, get_name)
+            bot.send_message(call.message.chat.id, 'Как тебя зовут?')
+            bot.register_next_step_handler(call.message, get_name)
 
     def get_name(message):
         name = message.text
-        user = User.objects.create(tg_id=int(message.chat.id), tg_username=message.chat.username, name=name)
+        user, created = User.objects.get_or_create(tg_id=message.chat.id, tg_username=message.chat.username)
+        user.name = name
+        user.save()
         bot.send_message(message.chat.id, 'Сколько тебе лет?')
         bot.register_next_step_handler(message, get_age)
 
@@ -38,13 +37,26 @@ def start_bot():
         user = User.objects.get(tg_id=message.chat.id)
         user.department = department
         user.save()
-        bot.send_message(message.chat.id, 'Расскажи о себе')
+        bot.send_message(message.chat.id, 'Расскажи о себе. Максимум 130 символов')
         bot.register_next_step_handler(message, get_bio)
 
     def get_bio(message):
         bio = message.text
+        if len(bio) > 130:
+            bot.send_message(message.chat.id, 'Слишком много символов')
+            bot.register_next_step_handler(message, get_bio)
+            return
         user = User.objects.get(tg_id=message.chat.id)
         user.bio = bio
+        user.save()
+        bot.send_message(message.chat.id, 'Отправь песню, которая тебе нравится')
+        bot.register_next_step_handler(message, get_song)
+
+    def get_song(message):
+        name, artist = message.text.split('-')
+        user = User.objects.get(tg_id=message.chat.id)
+        song = Song.objects.create(name=name, artist=artist)
+        user.song = song
         user.save()
         bot.send_message(message.chat.id, 'Отправь фотографию')
         bot.register_next_step_handler(message, get_photo)
@@ -59,7 +71,7 @@ def start_bot():
         user = User.objects.get(tg_id=message.chat.id)
         user.photo.save(f'{user.tg_id}.jpg', ContentFile(response.content))
         user.save()
-        bot.send_message(message.chat.id, 'OK')
+        bot.send_message(message.chat.id, 'Регистрация успешна')
 
     @bot.message_handler(commands=['start'])
     def start_message(message):
@@ -68,9 +80,16 @@ def start_bot():
         keyboard.add(key_yes)
         bot.send_message(message.chat.id, 'Привет! Это Map. Я задам тебе несколько вопросов, чтобы добавить тебя на карту, начнем?', reply_markup=keyboard)
 
-    @bot.message_handler(commands=['menu'])
+    @bot.message_handler(commands=['edit'])
     def start_message(message):
-        bot.send_message(message.chat.id, 'Куда отправимся?')
+        keyboard = types.InlineKeyboardMarkup()
+        key_yes = types.InlineKeyboardButton(text='Давай)', callback_data='yes')
+        keyboard.add(key_yes)
+        bot.send_message(message.chat.id, 'Сейчас можно заполнить анкету заново', reply_markup=keyboard)
+
+    @bot.message_handler(commands=['feedback'])
+    def start_message(message):
+        bot.send_message(message.chat.id, 'Пиши сюда: @abakunov')
 
     @bot.message_handler(commands=['about'])
     def start_message(message):
