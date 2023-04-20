@@ -23,4 +23,8 @@ api_urls = [
 
     path('skip-user/', SkipUserView.as_view(), name='skip-user'),
     path('get-user-by-tg-id/', GetUserByTgIdView.as_view(), name='get-user-by_tg_id'),
+
+    path('send-like/', SendLikeView.as_view(), name='send-like'),
+    path('send-wawe/', SendWaweView.as_view(), name='send-wawe'),
+    path('send-dope/', SendDopeView.as_view(), name='send-dope'),
 ]

@@ -22,11 +22,11 @@ class LocationSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
     views_all_time = serializers.Field()
     views_today = serializers.Field()
-    # location = LocationSerializer()
 
     class Meta:
         model = User
-        fields = '__all__'
+        # all fields and views_all_time and views_today
+        fields = ('id', 'tg_id', 'tg_username', 'name', 'department', 'bio', 'age', 'interests', 'photo', 'song', 'location', 'last_time_set_location', 'views_all_time', 'views_today')
         depth = 2
 
     @property

@@ -4,9 +4,12 @@ from rest_framework import generics, views
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
 from rest_framework import status
-
+from map.settings import BOT_TOKEN
 from core.models import *
 from .serializers import *
+from .pagination import *
+
+import telebot
 
 class CreateUserView(generics.CreateAPIView):
     queryset = User.objects.all()
@@ -114,11 +117,14 @@ class InCoworkingView(views.APIView):
 
 class GetAllUsersView(generics.ListAPIView):
     permission_classes = [AllowAny]
+    pagination_class = UsersPagination
+    serializer_class = UserSerializer
 
-    def get(self, request, *args, **kwargs):
-        user = User.objects.get(tg_id=request.GET.get('tg_id'))
-        data = UserSerializer(User.objects.exclude(tg_id=user.tg_id), many=True).data
-        return Response(data, status=status.HTTP_200_OK)
+    def get_queryset(self, *args, **kwargs):
+        user = User.objects.get(tg_id=self.request.GET.get('tg_id'))
+        blacklist = user.blacklist.all()
+        return User.objects.exclude(tg_id=user.tg_id).exclude(tg_id__in=blacklist.values_list('tg_id', flat=True))
+
 
 
 class SkipUserView(views.APIView):
@@ -137,3 +143,45 @@ class GetUserByTgIdView(generics.RetrieveAPIView):
         user = User.objects.get(tg_id=request.GET.get('tg_id'))
         data = UserSerializer(user).data
         return Response(data, status=status.HTTP_200_OK)
+
+
+class SendWaweView(views.APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        user = User.objects.get(tg_id=request.data['tg_id'])
+        target = User.objects.get(tg_id=request.data['target_id'])
+
+        bot = telebot.TeleBot(BOT_TOKEN)
+
+        bot.send_message(target.tg_id, user.name + ' приветствует тебя!🖐' + ' ' + '@'+ str(user.tg_username))
+        
+        return Response(status=status.HTTP_200_OK)
+
+
+class SendLikeView(views.APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        user = User.objects.get(tg_id=request.data['tg_id'])
+        target = User.objects.get(tg_id=request.data['target_id'])
+
+        bot = telebot.TeleBot(BOT_TOKEN)
+
+        bot.send_message(target.tg_id, user.name + ' приветствует тебя!💙' + ' ' + '@'+ str(user.tg_username))
+        
+        return Response(status=status.HTTP_200_OK)
+
+
+class SendDopeView(views.APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        user = User.objects.get(tg_id=request.data['tg_id'])
+        target = User.objects.get(tg_id=request.data['target_id'])
+
+        bot = telebot.TeleBot(BOT_TOKEN)
+
+        bot.send_message(target.tg_id, user.name + ' приветствует тебя!😎' + ' ' + '@'+ str(user.tg_username))
+        
+        return Response(status=status.HTTP_200_OK)

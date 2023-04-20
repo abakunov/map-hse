@@ -50,6 +50,7 @@ INSTALLED_APPS = [
 
     'core',
     'api',
+    'bot',
 ]
 
 MIDDLEWARE = [
@@ -99,6 +100,8 @@ DATABASES = {
      }
 }
 
+
+BOT_TOKEN = os.getenv('BOT_TOKEN')
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators

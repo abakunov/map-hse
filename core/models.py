@@ -5,7 +5,7 @@ import datetime
 
 
 class User(models.Model):
-    tg_id = models.PositiveIntegerField(unique=True)
+    tg_id = models.BigIntegerField(unique=True)
     tg_username = models.CharField(max_length=1000, unique=True)
     name = models.CharField(max_length=1000)
     department = models.CharField(max_length=1000)
