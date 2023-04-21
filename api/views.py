@@ -188,3 +188,7 @@ class SendDopeView(views.APIView):
         bot.send_message(user.tg_id, 'Ты приветствуешь ' + target.name + '😎' + ' ' + '@'+ str(target.tg_username))
         
         return Response(status=status.HTTP_200_OK)
+
+
+# class SendProfileEditMsgView(views.APIView):
+    
