@@ -102,6 +102,7 @@ DATABASES = {
 
 
 BOT_TOKEN = os.getenv('BOT_TOKEN')
+TEST_BOT_TOKEN = os.getenv('TEST_BOT_TOKEN')
 GENIUS_ACCESS_TOKEN = os.getenv('GENIUS_ACCESS_TOKEN')
 
 # Password validation

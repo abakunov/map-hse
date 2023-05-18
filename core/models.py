@@ -13,6 +13,7 @@ import urllib.request
 import os
 import requests
 from django.core.files.base import ContentFile
+from django.utils import timezone
 
 
 
@@ -88,6 +89,13 @@ class Location(models.Model):
 
     def __str__(self):
         return str(self.floor) + ' ' + str(self.x) + ' ' + str(self.y)
+
+
+class Visitor(models.Model):
+    tg_id = models.BigIntegerField(unique=True)
+    tg_username = models.CharField(max_length=1000, unique=True)
+    who_invited = models.ForeignKey('Visitor', on_delete=models.CASCADE, related_name='who_invited_visitor', blank=True, null=True)
+    timestamp = models.DateTimeField(default=timezone.now)
 
 
 class Song(models.Model):
