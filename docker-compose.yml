@@ -18,3 +18,12 @@ services:
     volumes:
       - .:/usr/src/app/
       - ./media:/app/map/media
+  
+  test_bot:
+    image: test_bot_image
+    build: .
+    command: python manage.py test_bot
+    volumes:
+      - .:/usr/src/app/
+      - ./media:/app/map/media
+  
